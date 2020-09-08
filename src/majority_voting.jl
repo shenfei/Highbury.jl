@@ -1,9 +1,6 @@
 using Distributed
 using SharedArrays
 
-export majority_element, distributed_majority_element, parallel_majority_element
-
-
 @everywhere function BoyerMoore(A::AbstractArray{T, 1}, k::Int=2)::Dict{T, Int} where T
     candidates = Dict{T, Int}()
     for a in A
