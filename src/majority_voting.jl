@@ -10,7 +10,9 @@ using SharedArrays
             to_del = Vector{T}()
             for key in keys(candidates)
                 candidates[key] -= 1
-                candidates[key] <= 0 && append!(to_del, key)
+                if candidates[key] <= 0
+                    append!(to_del, key)
+                end
             end
             for key in to_del
                 pop!(candidates, key)
@@ -29,7 +31,9 @@ function majority_element(A::Vector{T}, k::Int=2)::Vector{T} where T
         candidates[key] = 0
     end
     for a in A
-        haskey(candidates, a) && (candidates[a] += 1)
+        if haskey(candidates, a)
+            candidates[a] += 1
+        end
     end
 
     bar = div(length(A), k) + 1
@@ -46,12 +50,16 @@ end
             to_del = Vector{T}()
             for a in keys(X)
                 X[a] -= min_v
-                X[a] <= 0 && append!(to_del, a)
+                if X[a] <= 0
+                    append!(to_del, a)
+                end
             end
             for a in to_del
                 pop!(X, a)
             end
-            v > min_v && (X[key] = v - min_v)
+            if v > min_v
+                X[key] = v - min_v
+            end
         end
     end
     return X
@@ -76,7 +84,9 @@ function distributed_majority_element(A::Vector{T}, p::Int, k::Int=2)::Vector{T}
         left = (i - 1) * step + 1
         right = i == p ? n : i * step
         for a in view(A, left:right)
-            haskey(counter, a) && (counter[a] += 1)
+            if haskey(counter, a)
+                counter[a] += 1
+            end
         end
         counter
     end
@@ -105,7 +115,9 @@ function parallel_majority_element(A::Vector{T}, p::Int, k::Int=2)::Vector{T} wh
         left = (i - 1) * step + 1
         right = i == p ? n : i * step
         for a in view(A, left:right)
-            haskey(pool[i], a) && (pool[i][a] += 1)
+            if haskey(pool[i], a)
+                pool[i][a] += 1
+            end
         end
     end
     counter = reduce(mergewith(+), pool)
